@@ -13,7 +13,7 @@ import * as cocoSSD from '@tensorflow-models/coco-ssd';
 export class AppComponent implements OnInit {
   title = 'TF-ObjectDetection';
   private video_org: HTMLVideoElement;
-  private video_pre: HTMLVideoElement;
+  // private video_pre: HTMLVideoElement;
   private model;
   private pauseCount;
 
@@ -21,8 +21,9 @@ export class AppComponent implements OnInit {
     // this.webcam_init();
     // this.predictWithCocoModel();
     this.page_load_init();
-    this.initCocoModel();
-    this.pauseCount = 0;
+    // this.initCocoModel();
+    // this.pauseCount = 0;
+    this.predictWithCocoModel();
   }
 
   public async initCocoModel() {
@@ -30,21 +31,19 @@ export class AppComponent implements OnInit {
     console.log('model loaded');
   }
   public async predictWithCocoModel() {
-    // const model = await cocoSSD.load('lite_mobilenet_v2');
-    this.detectFrame(this.video_org, this.model);
+    const model = await cocoSSD.load('lite_mobilenet_v2');
+    this.detectFrame(this.video_org, model);
   }
 
   page_load_init() {
     this.video_org = <HTMLVideoElement> document.getElementById('vid_org');
-    this.video_pre = <HTMLVideoElement> document.getElementById('vid_pre');
+    // this.video_pre = <HTMLVideoElement> document.getElementById('vid_pre');
   }
 
   videoOnPlay(event) {
-    const fps = 10;
-    const stream_data = (this.video_org as any).captureStream(fps);
-    this.video_pre.srcObject = stream_data;
-    this.pauseCount ++;
-    console.log(this.pauseCount);
+    // const fps = 10;
+    // const stream_data = (this.video_org as any).captureStream(fps);
+    // this.video_pre.srcObject = stream_data;
   }
 
   webcam_init() {
@@ -68,6 +67,7 @@ export class AppComponent implements OnInit {
   detectFrame = (video, model) => {
     model.detect(video).then(predictions => {
       this.renderPredictions(predictions);
+
       requestAnimationFrame(() => {
         this.detectFrame(video, model);
       });
@@ -78,15 +78,16 @@ export class AppComponent implements OnInit {
     const canvas = <HTMLCanvasElement> document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     canvas.width  = 600;
-    canvas.height = 600;
+    canvas.height = 300;
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     // Font options.
     const font = '16px sans-serif';
     ctx.font = font;
     ctx.textBaseline = 'top';
-    ctx.drawImage(this.video_org, 0, 0, 300, 300);
+    ctx.drawImage(this.video_org, 0, 0, 600, 300);
 
+    // console.log(predictions)
     predictions.forEach(prediction => {
       const x = prediction.bbox[0];
       const y = prediction.bbox[1];
