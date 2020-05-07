@@ -10,3 +10,14 @@ if (environment.production) {
 
 platformBrowserDynamic().bootstrapModule(AppModule)
   .catch(err => console.log(err));
+
+const mimeTypes = [
+  'video/mp4', "video/3gpp", "video/quicktime"
+  , "video/x-ms-wmv", "video/x-msvideo", "video/mpeg"
+  , "video/dvd", "video/xvid", "video/x-flv"
+  , "video/x-f4v", "video/divx"
+];
+
+const video = document.createElement("video");
+
+mimeTypes.forEach(type => console.log(type,  video.canPlayType(type)));
